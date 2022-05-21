@@ -82,4 +82,28 @@ class MainActivity : AppCompatActivity() {
 
         db.close()
     }
+
+    fun handleUpdate(id: Int, name: Int, fromT: String, toT: String, notes: String){
+        val db = dbHelper.writableDatabase
+
+        val values = ContentValues().apply {
+            put("name", name)
+            put("started", SimpleDateFormat("dd.MM.yyyy kk:mm").parse(fromT).time)
+            put("finished", SimpleDateFormat("dd.MM.yyyy kk:mm").parse(toT).time)
+            put("notes", notes)
+        }
+
+        val newRowId = db.update("Activities", values, "id = ?", arrayOf(id.toString()))
+
+        db.close()
+    }
+
+    fun handleDelete(id: Int){
+        val db = dbHelper.writableDatabase
+
+        val deletedRows = db.delete("Activities", "id = ?", arrayOf(id.toString()))
+
+        db.close()
+    }
+
 }
