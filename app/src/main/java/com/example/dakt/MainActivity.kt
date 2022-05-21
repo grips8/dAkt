@@ -1,16 +1,23 @@
 package com.example.dakt
 
+import android.app.DatePickerDialog
 import android.content.ContentValues
 import android.database.Cursor
+import android.graphics.Color
 import android.os.Bundle
-import android.widget.Button
+import android.util.Log
+import android.view.View
+import android.view.ViewGroup
+import android.widget.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.marginLeft
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.dakt.databinding.ActivityMainBinding
+import org.w3c.dom.Text
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -19,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var dbHelper: DatabaseHelper = DatabaseHelper(this)
     private val activities: MutableList<Activity> = mutableListOf()
+    private val actButtons: MutableList<Button> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,26 +47,84 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        findViewById<Button>(R.id.testButton).setOnClickListener {
-            handleGet("10.12.2020 15:24", "11.12.2020 16:00")
-            handleInsert(1, "11.12.2020 15:24", "11.12.2020 16:00", "lorem ipsum")
+        val c = Calendar.getInstance()
+        val year = c.get(Calendar.YEAR)
+        val month = c.get(Calendar.MONTH) + 1
+        val day = c.get(Calendar.DAY_OF_MONTH)
+
+        val dateText: EditText = findViewById(R.id.horDate)
+        dateText.setText("$day/$month/$year")
+        loadActivities(dateText.text.toString())
+
+        findViewById<Button>(R.id.dateButton).setOnClickListener {
+            loadActivities(dateText.text.toString())
         }
     }
 
-    fun handleGet(fromT: String, toT: String){
-        val fromTime = SimpleDateFormat("dd.MM.yyyy kk:mm").parse(fromT).time
-        val toTime = SimpleDateFormat("dd.MM.yyyy kk:mm").parse(toT).time
-        val selectionArgs = arrayOf(fromTime.toString(), toTime.toString())
+    fun select(view: View) {
+        Log.d("tag1", view.id.toString())
+        Log.d("tag2", findViewById<TextView>(view.id).text.toString())
+    }
+
+    fun loadActivities(day: String){
+        val pixelRatio = 8;
+        val horLayout: RelativeLayout = findViewById(R.id.horLayout);
+        horLayout.minimumWidth = 24*60*pixelRatio
+        horLayout.setBackgroundColor(Color.LTGRAY)
+
+        val fromTime = SimpleDateFormat("dd/MM/yyyy").parse(day).time
+        Log.d("myTag", fromTime.toString())
+        handleGet(fromTime)
+
+
+        actButtons.clear()
+        var marg: Int
+        var end: Int
+        var layParam: FrameLayout.LayoutParams
+        activities.forEach{
+            actButtons.add(Button(this))
+            actButtons.last().id = it.id
+            if (it.finished.time > fromTime + 86400)
+                end = 86400
+            else
+                end = (it.finished.time - fromTime).toInt()
+            if (it.started.time <= fromTime)
+                marg = 0
+            else
+                marg = (it.started.time - fromTime).toInt()
+            layParam = FrameLayout.LayoutParams((end - marg) / pixelRatio, FrameLayout.LayoutParams.MATCH_PARENT)
+            layParam.setMargins(marg / pixelRatio, 0, 0, 0)
+            actButtons.last().layoutParams = layParam
+            actButtons.last().text = it.name
+            actButtons.last().setBackgroundColor(Color.DKGRAY)
+//            actButtons.last().isClickable = true
+//            actButtons.last().setOnclickListener()
+
+            horLayout.addView(actButtons.last())
+        }
+//        val myButton: Button = Button(this)
+//        myButton.width = 1000
+//        val myButton2: Button = Button(this)
+//        myButton.width = 1000
+//        myButton2.width = 1000
+//
+//        horLayout.addView(myButton)
+//        horLayout.addView(myButton2)
+    }
+
+    fun handleGet(fromT: Long){
+        val selectionArgs = arrayOf(fromT.toString(), (fromT + 86400).toString(), fromT.toString(), (fromT + 86400).toString())
+        activities.clear()
 
         val db = this.dbHelper.writableDatabase
         val cs: Cursor = db.query(
             "Activities JOIN Categories ON Activities.name = Categories.id",
             null,
-            "Activities.started > ? AND Activities.finished < ?",
+            "Activities.started > ? AND Activities.started < ? OR Activities.started < ? AND Activities.finished > ?",
             selectionArgs,
             null,
             null,
-            null
+            "started ASC"
         )
 
         while (cs.moveToNext()) {
@@ -105,5 +171,6 @@ class MainActivity : AppCompatActivity() {
 
         db.close()
     }
+
 
 }
