@@ -1,51 +1,26 @@
 package com.example.dakt
 
-import android.app.DatePickerDialog
 import android.content.ContentValues
 import android.database.Cursor
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import android.widget.*
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.marginLeft
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import com.example.dakt.databinding.ActivityMainBinding
-import org.w3c.dom.Text
 import java.text.SimpleDateFormat
 import java.util.*
 
+
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
     private var dbHelper: DatabaseHelper = DatabaseHelper(this)
     private val activities: MutableList<Activity> = mutableListOf()
     private val actButtons: MutableList<Button> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        val navView: BottomNavigationView = binding.navView
-
-        val navController = findNavController(R.id.nav_host_fragment_activity_main)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
-            )
-        )
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
+        setContentView(R.layout.activity_main)
 
         val c = Calendar.getInstance()
         val year = c.get(Calendar.YEAR)
@@ -71,6 +46,7 @@ class MainActivity : AppCompatActivity() {
         val horLayout: RelativeLayout = findViewById(R.id.horLayout);
         horLayout.minimumWidth = 24*60*pixelRatio
         horLayout.setBackgroundColor(Color.LTGRAY)
+        horLayout.removeAllViews()
 
         val fromTime = SimpleDateFormat("dd/MM/yyyy").parse(day).time
         Log.d("myTag", fromTime.toString())
@@ -97,19 +73,11 @@ class MainActivity : AppCompatActivity() {
             actButtons.last().layoutParams = layParam
             actButtons.last().text = it.name
             actButtons.last().setBackgroundColor(Color.DKGRAY)
-//            actButtons.last().isClickable = true
-//            actButtons.last().setOnclickListener()
+            actButtons.last().isClickable = true
+            actButtons.last().setOnClickListener { select(actButtons.last())}
 
             horLayout.addView(actButtons.last())
         }
-//        val myButton: Button = Button(this)
-//        myButton.width = 1000
-//        val myButton2: Button = Button(this)
-//        myButton.width = 1000
-//        myButton2.width = 1000
-//
-//        horLayout.addView(myButton)
-//        horLayout.addView(myButton2)
     }
 
     fun handleGet(fromT: Long){
