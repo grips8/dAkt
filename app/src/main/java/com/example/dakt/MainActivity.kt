@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.graphics.Color
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
 import android.view.View
 import android.widget.*
@@ -15,7 +16,7 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
 
     private var dbHelper: DatabaseHelper = DatabaseHelper(this)
-    private val activities: MutableList<Activity> = mutableListOf()
+    private val activities: MutableMap<Int, Activity> = mutableMapOf()
     private val actButtons: MutableList<Button> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,6 +40,23 @@ class MainActivity : AppCompatActivity() {
     fun select(view: View) {
         Log.d("tag1", view.id.toString())
         Log.d("tag2", findViewById<TextView>(view.id).text.toString())
+
+        val edCategory: EditText = findViewById(R.id.edCategory)
+        val edStarted: EditText = findViewById(R.id.edStarted)
+        val edFinished: EditText = findViewById(R.id.edFinished)
+        val edNotes: EditText = findViewById(R.id.edNotes)
+
+        edCategory.inputType = InputType.TYPE_NULL
+        edStarted.inputType = InputType.TYPE_NULL
+        edFinished.inputType = InputType.TYPE_NULL
+        edNotes.inputType = InputType.TYPE_NULL
+
+
+        edCategory.setText(activities[view.id]?.name ?: "NULL")
+        edStarted.setText(activities[view.id]?.started.toString() ?: "NULL")
+        edFinished.setText(activities[view.id]?.finished.toString() ?: "NULL")
+        edNotes.setText(activities[view.id]?.notes ?: "NULL")
+
     }
 
     fun loadActivities(day: String){
@@ -57,21 +75,21 @@ class MainActivity : AppCompatActivity() {
         var marg: Int
         var end: Int
         var layParam: FrameLayout.LayoutParams
-        activities.forEach{
+        for ((key, value) in activities) {
             actButtons.add(Button(this))
-            actButtons.last().id = it.id
-            if (it.finished.time > fromTime + 86400)
+            actButtons.last().id = value.id
+            if (value.finished.time > fromTime + 86400)
                 end = 86400
             else
-                end = (it.finished.time - fromTime).toInt()
-            if (it.started.time <= fromTime)
+                end = (value.finished.time - fromTime).toInt()
+            if (value.started.time <= fromTime)
                 marg = 0
             else
-                marg = (it.started.time - fromTime).toInt()
+                marg = (value.started.time - fromTime).toInt()
             layParam = FrameLayout.LayoutParams((end - marg) / pixelRatio, FrameLayout.LayoutParams.MATCH_PARENT)
             layParam.setMargins(marg / pixelRatio, 0, 0, 0)
             actButtons.last().layoutParams = layParam
-            actButtons.last().text = it.name
+            actButtons.last().text = value.name
             actButtons.last().setBackgroundColor(Color.DKGRAY)
             actButtons.last().isClickable = true
             actButtons.last().setOnClickListener { select(actButtons.last())}
@@ -96,7 +114,8 @@ class MainActivity : AppCompatActivity() {
         )
 
         while (cs.moveToNext()) {
-            activities.add(Activity(cs.getInt(0), cs.getString(6), Date(cs.getLong(2)), Date(cs.getLong(3)), cs.getString(4)))
+            activities[cs.getInt(0)] =
+                Activity(cs.getInt(0), cs.getString(6), Date(cs.getLong(2)), Date(cs.getLong(3)), cs.getString(4))
         }
         cs.close()
         db.close()
