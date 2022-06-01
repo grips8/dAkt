@@ -60,6 +60,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun loadActivities(day: String){
+        if (!DataValidator.checkIfValidDate(day)) {
+            Toast.makeText(this, "wrong date", Toast.LENGTH_SHORT).show()
+            return
+        }
         val pixelRatio = 8;
         val horLayout: RelativeLayout = findViewById(R.id.horLayout);
         horLayout.minimumWidth = 24*60*pixelRatio
@@ -67,9 +71,7 @@ class MainActivity : AppCompatActivity() {
         horLayout.removeAllViews()
 
         val fromTime = SimpleDateFormat("dd/MM/yyyy").parse(day).time
-        Log.d("myTag", fromTime.toString())
         handleGet(fromTime)
-
 
         actButtons.clear()
         var marg: Int
