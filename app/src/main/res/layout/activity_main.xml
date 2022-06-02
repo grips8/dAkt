@@ -20,9 +20,19 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="horizontal">
+            android:layout_weight="0.075"
+            android:orientation="horizontal"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:layout_marginTop="10dp">
 
+            <ImageButton
+                android:id="@+id/prevDateButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/left_arrow"
+                android:backgroundTint="@color/blue_grotto"/>
             <EditText
                 android:id="@+id/horDate"
                 android:layout_width="0dp"
@@ -33,132 +43,191 @@
                 android:textAlignment="center"
                 android:textAllCaps="false"
                 android:textSize="20sp"
-                tools:ignore="NestedWeights" />
-
-            <Button
+                android:layout_marginLeft="10dp"/>
+            <ImageButton
                 android:id="@+id/dateButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:src="@drawable/tick2_icon"
+                android:backgroundTint="@color/greenish"
+                android:layout_marginRight="10dp"/>
+            <ImageButton
+                android:id="@+id/nextDateButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/right_arrow"
+                android:backgroundTint="@color/blue_grotto"/>
 
         </LinearLayout>
         <HorizontalScrollView
             android:id="@+id/mainHorizontalView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="0dp"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="0dp"
-            android:layout_weight="2">
+            android:layout_weight="0.125"
+            android:background="@drawable/onlyborder">
 
             <RelativeLayout
                 android:id="@+id/horLayout"
                 android:layout_width="1000px"
-                android:layout_height="match_parent"
+                android:layout_height="240px"
                 android:orientation="horizontal" >
             </RelativeLayout>
         </HorizontalScrollView>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="11"
-            android:orientation="vertical">
+            android:layout_weight="0.725"
+            android:orientation="vertical"
+            android:paddingEnd="5dp"
+            android:paddingStart="5dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="10dp">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.3"
-                    android:text="Kategoria"
-                    android:textAlignment="textEnd"
-                    android:textAllCaps="true"/>
+                    android:text="Category"
+                    android:textAlignment="gravity"
+                    android:textAllCaps="true"
+                    android:gravity="center_vertical|right"
+                    android:padding="7dp"/>
                 <EditText
                     android:id="@+id/edCategory"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.7"/>
+                    android:layout_weight="0.7"
+                    android:background="@drawable/border"
+                    android:padding="7dp"
+                    android:maxLines="1"
+                    android:inputType="text"/>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="10dp">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.3"
-                    android:text="Czas rozpoczecia"
-                    android:textAlignment="textEnd"
-                    android:textAllCaps="true" />
+                    android:text="Start time"
+                    android:textAlignment="gravity"
+                    android:textAllCaps="true"
+                    android:gravity="center_vertical|right"
+                    android:padding="7dp"/>
                 <EditText
                     android:id="@+id/edStarted"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.7"/>
+                    android:layout_weight="0.7"
+                    android:background="@drawable/border"
+                    android:padding="7dp"
+                    android:maxLines="1"
+                    android:inputType="text"/>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="10dp">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.3"
-                    android:text="Czas zakonczenia"
-                    android:textAlignment="textEnd"
-                    android:textAllCaps="true"/>
+                    android:text="End time"
+                    android:textAlignment="gravity"
+                    android:textAllCaps="true"
+                    android:gravity="center_vertical|right"
+                    android:padding="7dp"/>
                 <EditText
                     android:id="@+id/edFinished"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.7"/>
+                    android:layout_weight="0.7"
+                    android:background="@drawable/border"
+                    android:padding="7dp"
+                    android:maxLines="1"
+                    android:inputType="text"/>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:orientation="horizontal">
+                android:layout_height="200dp"
+                android:orientation="horizontal"
+                android:paddingTop="10dp">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.3"
-                    android:text="notatki"
-                    android:textAlignment="textEnd"
-                    android:textAllCaps="true"/>
+                    android:text="Notes"
+                    android:textAlignment="gravity"
+                    android:textAllCaps="true"
+                    android:gravity="center_vertical|right"
+                    android:padding="7dp"/>
                 <EditText
                     android:id="@+id/edNotes"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.7"/>
+                    android:layout_weight="0.7"
+                    android:scrollHorizontally="false"
+                    android:breakStrategy="simple"
+                    android:gravity="top"
+                    android:background="@drawable/border"
+                    android:padding="7dp"/>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:gravity="right"
+                android:paddingTop="5dp">
 
-                <Button
+                <ImageButton
                     android:id="@+id/editButton"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:text="Edit"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginLeft="20dp"/>
+                    android:layout_width="65dp"
+                    android:layout_height="65dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_gravity="end"
+                    android:gravity="center"
+                    android:src="@drawable/edit_icon"
+                    android:backgroundTint="@color/design_default_color_primary"/>
 
-                <Button
+                <ImageButton
                     android:id="@+id/deleteButton"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:text="Delete"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginLeft="20dp"/>
+                    android:layout_width="65dp"
+                    android:layout_height="65dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:gravity="center_horizontal"
+                    android:src="@drawable/delete_icon"
+                    android:backgroundTint="@color/reddish"/>
+
+                <ImageButton
+                    android:id="@+id/enableAddButton"
+                    android:layout_width="65dp"
+                    android:layout_height="65dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_gravity="end"
+                    android:gravity="center"
+                    android:src="@drawable/add_icon"
+                    android:backgroundTint="@color/greenish"/>
 
             </LinearLayout>
 

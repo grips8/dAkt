@@ -1,6 +1,7 @@
 package com.example.dakt
 
 import android.content.ContentValues
+import android.content.Intent
 import android.database.Cursor
 import android.graphics.Color
 import android.os.Bundle
@@ -32,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         dateText.setText("$day/$month/$year")
         loadActivities(dateText.text.toString())
 
-        findViewById<Button>(R.id.dateButton).setOnClickListener {
+        findViewById<ImageButton>(R.id.dateButton).setOnClickListener {
             loadActivities(dateText.text.toString())
         }
 
@@ -51,20 +52,54 @@ class MainActivity : AppCompatActivity() {
 //        findViewById<ImageButton>(R.id.nextDateButton).setOnClickListener { nextDay() }
     }
 
-    fun select(view: View) {
-        Log.d("tag1", view.id.toString())
-        Log.d("tag2", findViewById<TextView>(view.id).text.toString())
+    fun prevDay() {
+        val str: String = findViewById<EditText>(R.id.horDate).text.toString()
+        if (DataValidator.checkIfValidDate(str)) {
+            val tim: Long = SimpleDateFormat("dd/MM/yyyy").parse(str).time - 86400000
+            val resstr: String = SimpleDateFormat("dd/MM/yyyy").format(Date(tim)).toString()
+            findViewById<EditText>(R.id.horDate).setText(resstr)
+            loadActivities(resstr)
+        }
+        else
+            Toast.makeText(this, "wrong date!", Toast.LENGTH_SHORT).show()
+    }
+
+    fun nextDay() {
+        val str: String = findViewById<EditText>(R.id.horDate).text.toString()
+        if (DataValidator.checkIfValidDate(str)) {
+            val tim: Long = SimpleDateFormat("dd/MM/yyyy").parse(str).time + 86400000
+            val resstr: String = SimpleDateFormat("dd/MM/yyyy").format(Date(tim)).toString()
+            findViewById<EditText>(R.id.horDate).setText(resstr)
+            loadActivities(resstr)
+        }
+        else
+            Toast.makeText(this, "wrong date!", Toast.LENGTH_SHORT).show()
+    }
+
+    fun select(mId: Int) {
+        Log.d("tag1", mId.toString())
+        Log.d("tag2", findViewById<TextView>(mId).text.toString())
+
+        currSelectedView = mId
+
+        val editBtn: ImageButton = findViewById(R.id.editButton)
+        val deleteBtn: ImageButton = findViewById(R.id.deleteButton)
+        editBtn.imageAlpha = 255
+        deleteBtn.imageAlpha = 255
+        editBtn.isEnabled = true
+        deleteBtn.isEnabled = true
 
         val edCategory: EditText = findViewById(R.id.edCategory)
         val edStarted: EditText = findViewById(R.id.edStarted)
         val edFinished: EditText = findViewById(R.id.edFinished)
         val edNotes: EditText = findViewById(R.id.edNotes)
 
-        edCategory.inputType = InputType.TYPE_NULL
-        edStarted.inputType = InputType.TYPE_NULL
-        edFinished.inputType = InputType.TYPE_NULL
-        edNotes.inputType = InputType.TYPE_NULL
 
+        val dateFormat: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy kk:mm")
+        edCategory.setText(activities[mId]?.name ?: "NULL")
+        edStarted.setText(dateFormat.format(activities[mId]!!.started).toString())
+        edFinished.setText(dateFormat.format(activities[mId]!!.finished).toString())
+        edNotes.setText(activities[mId]?.notes ?: "NULL")
 
         edCategory.setText(activities[view.id]?.name ?: "NULL")
         edStarted.setText(activities[view.id]?.started.toString() ?: "NULL")
@@ -78,10 +113,41 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "wrong date", Toast.LENGTH_SHORT).show()
             return
         }
-        val pixelRatio = 8;
+
+        val editBtn: ImageButton = findViewById(R.id.editButton)
+        val deleteBtn: ImageButton = findViewById(R.id.deleteButton)
+        editBtn.imageAlpha = 75
+        deleteBtn.imageAlpha = 75
+        editBtn.isEnabled = false
+        deleteBtn.isEnabled = false
+
+        val edCategory: EditText = findViewById(R.id.edCategory)
+        val edStarted: EditText = findViewById(R.id.edStarted)
+        val edFinished: EditText = findViewById(R.id.edFinished)
+        val edNotes: EditText = findViewById(R.id.edNotes)
+
+        edCategory.isEnabled = false
+        edStarted.isEnabled = false
+        edFinished.isEnabled = false
+        edNotes.isEnabled = false
+
+        edCategory.text = null
+        edStarted.text = null
+        edFinished.text = null
+        edNotes.text = null
+
+       val insBtn: ImageButton = findViewById(R.id.enableAddButton)
+        insBtn.setOnClickListener {
+            enableInsert()
+        }
+        insBtn.setImageResource(R.drawable.add_icon)
+
+        currSelectedView = -1
+
+        val pixelRatio = 8;     // pixels per 1 minute
         val horLayout: RelativeLayout = findViewById(R.id.horLayout);
         horLayout.minimumWidth = 24*60*pixelRatio
-        horLayout.setBackgroundColor(Color.LTGRAY)
+        horLayout.setBackgroundResource(R.drawable.hbg)
         horLayout.removeAllViews()
 
         val fromTime = SimpleDateFormat("dd/MM/yyyy").parse(day).time
