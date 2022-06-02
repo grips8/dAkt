@@ -35,6 +35,20 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.dateButton).setOnClickListener {
             loadActivities(dateText.text.toString())
         }
+
+        findViewById<Button>(R.id.switchCatButton).setOnClickListener {
+            val intent = Intent(this, CategoriesView::class.java)
+            startActivity(intent)
+        }
+//        findViewById<ImageButton>(R.id.deleteButton).setOnClickListener {
+//            handleDelete()
+//            loadActivities(findViewById<EditText>(R.id.horDate).text.toString())
+//        }
+//
+//        findViewById<ImageButton>(R.id.enableAddButton).setOnClickListener { enableInsert() }
+//
+//        findViewById<ImageButton>(R.id.prevDateButton).setOnClickListener { prevDay() }
+//        findViewById<ImageButton>(R.id.nextDateButton).setOnClickListener { nextDay() }
     }
 
     fun select(view: View) {
