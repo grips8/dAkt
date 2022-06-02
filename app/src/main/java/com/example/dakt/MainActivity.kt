@@ -19,6 +19,7 @@ class MainActivity : AppCompatActivity() {
     private var dbHelper: DatabaseHelper = DatabaseHelper(this)
     private val activities: MutableMap<Int, Activity> = mutableMapOf()
     private val actButtons: MutableList<Button> = mutableListOf()
+    private var currSelectedView: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
