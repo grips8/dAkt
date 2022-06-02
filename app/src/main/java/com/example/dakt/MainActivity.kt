@@ -42,15 +42,15 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, CategoriesView::class.java)
             startActivity(intent)
         }
-//        findViewById<ImageButton>(R.id.deleteButton).setOnClickListener {
-//            handleDelete()
-//            loadActivities(findViewById<EditText>(R.id.horDate).text.toString())
-//        }
-//
-//        findViewById<ImageButton>(R.id.enableAddButton).setOnClickListener { enableInsert() }
-//
-//        findViewById<ImageButton>(R.id.prevDateButton).setOnClickListener { prevDay() }
-//        findViewById<ImageButton>(R.id.nextDateButton).setOnClickListener { nextDay() }
+        findViewById<ImageButton>(R.id.deleteButton).setOnClickListener {
+            handleDelete()
+            loadActivities(findViewById<EditText>(R.id.horDate).text.toString())
+        }
+
+        findViewById<ImageButton>(R.id.enableAddButton).setOnClickListener { enableInsert() }
+
+        findViewById<ImageButton>(R.id.prevDateButton).setOnClickListener { prevDay() }
+        findViewById<ImageButton>(R.id.nextDateButton).setOnClickListener { nextDay() }
     }
 
     fun prevDay() {
@@ -206,19 +206,108 @@ class MainActivity : AppCompatActivity() {
         db.close()
     }
 
-    fun handleInsert(name: Int, fromT: String, toT: String, notes: String){
-        val db = dbHelper.writableDatabase
+    fun enableInsert() {
+        currSelectedView = -1
 
-        val values = ContentValues().apply {
-            put("name", name)
-            put("started", SimpleDateFormat("dd.MM.yyyy kk:mm").parse(fromT).time)
-            put("finished", SimpleDateFormat("dd.MM.yyyy kk:mm").parse(toT).time)
-            put("notes", notes)
+        val editBtn: ImageButton = findViewById(R.id.editButton)
+        val deleteBtn: ImageButton = findViewById(R.id.deleteButton)
+        editBtn.imageAlpha = 75
+        deleteBtn.imageAlpha = 75
+        editBtn.isEnabled = false
+        deleteBtn.isEnabled = false
+
+        val edCategory: EditText = findViewById(R.id.edCategory)
+        val edStarted: EditText = findViewById(R.id.edStarted)
+        val edFinished: EditText = findViewById(R.id.edFinished)
+        val edNotes: EditText = findViewById(R.id.edNotes)
+
+        edCategory.isEnabled = true
+        edStarted.isEnabled = true
+        edFinished.isEnabled = true
+        edNotes.isEnabled = true
+
+        edCategory.text = null
+        edStarted.text = null
+        edFinished.text = null
+        edNotes.text = null
+
+        val insBtn: ImageButton = findViewById(R.id.enableAddButton)
+        insBtn.setOnClickListener {
+            handleInsert()
         }
+        insBtn.setImageResource(R.drawable.tick_icon)
+    }
 
-        val newRowId = db.insert("Activities", null, values)
+    fun fetchCategory(str: String) : Int {
+        val db = dbHelper.readableDatabase
+        var res: Int = -1
 
+        val selectionArgs = arrayOf(str)
+        val cols = arrayOf("Id")
+        val cs: Cursor = db.query(
+            "Categories",
+            cols,
+            "name = ?",
+            selectionArgs,
+            null,
+            null,
+            null
+        )
+
+        if (cs.moveToNext())
+            res = cs.getInt(0)
         db.close()
+
+        return res
+    }
+
+    fun handleInsert() {
+        val edCategory: EditText = findViewById(R.id.edCategory)
+        val edStarted: EditText = findViewById(R.id.edStarted)
+        val edFinished: EditText = findViewById(R.id.edFinished)
+        val edNotes: EditText = findViewById(R.id.edNotes)
+
+        if (!DataValidator.checkIfValidDateAndTime(edStarted.text.toString()))
+            Toast.makeText(this, "wrong start time!", Toast.LENGTH_SHORT).show()
+        else {
+            if (!DataValidator.checkIfValidDateAndTime(edFinished.text.toString()) ||
+                SimpleDateFormat("dd/MM/yyyy kk:mm").parse(edStarted.text.toString()).time >=
+                SimpleDateFormat("dd/MM/yyyy kk:mm").parse(edFinished.text.toString()).time)
+                Toast.makeText(this, "wrong end time!", Toast.LENGTH_SHORT).show()
+            else {
+                val catInt: Int = fetchCategory(edCategory.text.toString())
+                if (catInt == -1)
+                    Toast.makeText(this, "no such category!", Toast.LENGTH_SHORT).show()
+                else {
+                    val db = dbHelper.writableDatabase
+
+                    val values = ContentValues().apply {
+                        put("name", catInt)
+                        put(
+                            "started",
+                            SimpleDateFormat("dd/MM/yyyy kk:mm").parse(edStarted.text.toString()).time
+                        )
+                        put(
+                            "finished",
+                            SimpleDateFormat("dd/MM/yyyy kk:mm").parse(edFinished.text.toString()).time
+                        )
+                        put("notes", edNotes.text.toString())
+                    }
+
+                    val newRowId = db.insert("Activities", null, values)
+
+                    db.close()
+
+                    loadActivities(edStarted.text.toString().split(' ')[0])
+
+                    val insBtn: ImageButton = findViewById(R.id.enableAddButton)
+                    insBtn.setOnClickListener {
+                        enableInsert()
+                    }
+                    insBtn.setImageResource(R.drawable.add_icon)
+                }
+            }
+        }
     }
 
     fun handleUpdate(id: Int, name: Int, fromT: String, toT: String, notes: String){
@@ -236,12 +325,14 @@ class MainActivity : AppCompatActivity() {
         db.close()
     }
 
-    fun handleDelete(id: Int){
-        val db = dbHelper.writableDatabase
+    fun handleDelete(){
+        if (currSelectedView != -1) {
+            val db = dbHelper.writableDatabase
 
-        val deletedRows = db.delete("Activities", "id = ?", arrayOf(id.toString()))
+            val deletedRows = db.delete("Activities", "id = ?", arrayOf(currSelectedView.toString()))
 
-        db.close()
+            db.close()
+        }
     }
 
 
