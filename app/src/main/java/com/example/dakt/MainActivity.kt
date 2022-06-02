@@ -101,11 +101,11 @@ class MainActivity : AppCompatActivity() {
         edFinished.setText(dateFormat.format(activities[mId]!!.finished).toString())
         edNotes.setText(activities[mId]?.notes ?: "NULL")
 
-        edCategory.setText(activities[view.id]?.name ?: "NULL")
-        edStarted.setText(activities[view.id]?.started.toString() ?: "NULL")
-        edFinished.setText(activities[view.id]?.finished.toString() ?: "NULL")
-        edNotes.setText(activities[view.id]?.notes ?: "NULL")
-
+        val insBtn: ImageButton = findViewById(R.id.enableAddButton)
+        insBtn.setOnClickListener {
+            enableInsert()
+        }
+        insBtn.setImageResource(R.drawable.add_icon)
     }
 
     fun loadActivities(day: String){
@@ -160,28 +160,30 @@ class MainActivity : AppCompatActivity() {
         for ((key, value) in activities) {
             actButtons.add(Button(this))
             actButtons.last().id = value.id
-            if (value.finished.time > fromTime + 86400)
-                end = 86400
+            if (value.finished.time > fromTime + 86400000)
+                end = 86400000
             else
                 end = (value.finished.time - fromTime).toInt()
             if (value.started.time <= fromTime)
                 marg = 0
             else
                 marg = (value.started.time - fromTime).toInt()
-            layParam = FrameLayout.LayoutParams((end - marg) / pixelRatio, FrameLayout.LayoutParams.MATCH_PARENT)
-            layParam.setMargins(marg / pixelRatio, 0, 0, 0)
+            layParam = FrameLayout.LayoutParams((end - marg) / 60 / 1000 * pixelRatio, FrameLayout.LayoutParams.MATCH_PARENT - 10) // ????? xD
+            layParam.setMargins(marg / 60 / 1000 * pixelRatio, 0, 0, 0)
             actButtons.last().layoutParams = layParam
             actButtons.last().text = value.name
             actButtons.last().setBackgroundColor(Color.DKGRAY)
             actButtons.last().isClickable = true
-            actButtons.last().setOnClickListener { select(actButtons.last())}
+            val index = actButtons.last().id
+            actButtons.last().setOnClickListener { select(index) }
+            actButtons.last().setBackgroundResource(R.drawable.actborder)
 
             horLayout.addView(actButtons.last())
         }
     }
 
     fun handleGet(fromT: Long){
-        val selectionArgs = arrayOf(fromT.toString(), (fromT + 86400).toString(), fromT.toString(), (fromT + 86400).toString())
+        val selectionArgs = arrayOf(fromT.toString(), (fromT + 86400000).toString(), fromT.toString(), fromT.toString())
         activities.clear()
 
         val db = this.dbHelper.writableDatabase

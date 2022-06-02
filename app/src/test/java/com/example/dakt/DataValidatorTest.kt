@@ -1,3 +1,5 @@
+package com.example.dakt
+
 import com.example.dakt.DataValidator
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
