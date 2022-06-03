@@ -97,4 +97,20 @@ class DataValidatorTest {
         val result = DataValidator.checkIfValidDateAndTime("5/11/2019 4:20")
         assertThat(result).isTrue()
     }
-}
+
+    @Test
+    fun `same date-times returns false` () {
+        val result = DataValidator.checkIfValidStartFinishDates("12/09/2002 15:05", "12/09/2002 15:05")
+        assertThat(result).isFalse()
+    }
+    @Test
+    fun `greater start date-time returns false` () {
+        val result = DataValidator.checkIfValidStartFinishDates("12/09/2002 19:05", "12/09/2002 15:05")
+        assertThat(result).isFalse()
+    }
+    @Test
+    fun `greater finish date-time returns true` () {
+        val result = DataValidator.checkIfValidStartFinishDates("12/09/2002 15:05", "14/09/2002 15:05")
+        assertThat(result).isTrue()
+    }
+ }

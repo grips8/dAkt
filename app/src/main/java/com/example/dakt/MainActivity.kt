@@ -48,9 +48,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<ImageButton>(R.id.enableAddButton).setOnClickListener { enableInsert() }
-
         findViewById<ImageButton>(R.id.prevDateButton).setOnClickListener { prevDay() }
         findViewById<ImageButton>(R.id.nextDateButton).setOnClickListener { nextDay() }
+        findViewById<ImageButton>(R.id.editButton).setOnClickListener { enableUpdate() }
+
     }
 
     fun prevDay() {
@@ -89,12 +90,18 @@ class MainActivity : AppCompatActivity() {
         deleteBtn.imageAlpha = 255
         editBtn.isEnabled = true
         deleteBtn.isEnabled = true
+        editBtn.background.setTint(Color.parseColor("#75E6DA")) // R.color.blue_grotto
+        deleteBtn.background.setTint(Color.parseColor("#FF5C5C"))   // R.color.reddish
 
         val edCategory: EditText = findViewById(R.id.edCategory)
         val edStarted: EditText = findViewById(R.id.edStarted)
         val edFinished: EditText = findViewById(R.id.edFinished)
         val edNotes: EditText = findViewById(R.id.edNotes)
 
+        edCategory.isEnabled = false
+        edStarted.isEnabled = false
+        edFinished.isEnabled = false
+        edNotes.isEnabled = false
 
         val dateFormat: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy kk:mm")
         edCategory.setText(activities[mId]?.name ?: "NULL")
@@ -121,6 +128,8 @@ class MainActivity : AppCompatActivity() {
         deleteBtn.imageAlpha = 75
         editBtn.isEnabled = false
         deleteBtn.isEnabled = false
+        editBtn.background.setTint(Color.LTGRAY)
+        deleteBtn.background.setTint(Color.LTGRAY)
 
         val edCategory: EditText = findViewById(R.id.edCategory)
         val edStarted: EditText = findViewById(R.id.edStarted)
@@ -215,6 +224,8 @@ class MainActivity : AppCompatActivity() {
         deleteBtn.imageAlpha = 75
         editBtn.isEnabled = false
         deleteBtn.isEnabled = false
+        editBtn.background.setTint(Color.LTGRAY)
+        deleteBtn.background.setTint(Color.LTGRAY)
 
         val edCategory: EditText = findViewById(R.id.edCategory)
         val edStarted: EditText = findViewById(R.id.edStarted)
@@ -271,8 +282,7 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "wrong start time!", Toast.LENGTH_SHORT).show()
         else {
             if (!DataValidator.checkIfValidDateAndTime(edFinished.text.toString()) ||
-                SimpleDateFormat("dd/MM/yyyy kk:mm").parse(edStarted.text.toString()).time >=
-                SimpleDateFormat("dd/MM/yyyy kk:mm").parse(edFinished.text.toString()).time)
+                !DataValidator.checkIfValidStartFinishDates(edStarted.text.toString(), edFinished.text.toString()))
                 Toast.makeText(this, "wrong end time!", Toast.LENGTH_SHORT).show()
             else {
                 val catInt: Int = fetchCategory(edCategory.text.toString())
@@ -310,19 +320,69 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun handleUpdate(id: Int, name: Int, fromT: String, toT: String, notes: String){
-        val db = dbHelper.writableDatabase
+    fun enableUpdate() {
+        val edCategory: EditText = findViewById(R.id.edCategory)
+        val edStarted: EditText = findViewById(R.id.edStarted)
+        val edFinished: EditText = findViewById(R.id.edFinished)
+        val edNotes: EditText = findViewById(R.id.edNotes)
 
-        val values = ContentValues().apply {
-            put("name", name)
-            put("started", SimpleDateFormat("dd.MM.yyyy kk:mm").parse(fromT).time)
-            put("finished", SimpleDateFormat("dd.MM.yyyy kk:mm").parse(toT).time)
-            put("notes", notes)
+        edCategory.isEnabled = true
+        edStarted.isEnabled = true
+        edFinished.isEnabled = true
+        edNotes.isEnabled = true
+
+        val insBtn: ImageButton = findViewById(R.id.editButton)
+        insBtn.setOnClickListener {
+            handleUpdate()
         }
+        insBtn.setImageResource(R.drawable.tick_icon)
+    }
 
-        val newRowId = db.update("Activities", values, "id = ?", arrayOf(id.toString()))
+    fun handleUpdate(){
+        val edCategory: EditText = findViewById(R.id.edCategory)
+        val edStarted: EditText = findViewById(R.id.edStarted)
+        val edFinished: EditText = findViewById(R.id.edFinished)
+        val edNotes: EditText = findViewById(R.id.edNotes)
 
-        db.close()
+        if (!DataValidator.checkIfValidDateAndTime(edStarted.text.toString()))
+            Toast.makeText(this, "wrong start time!", Toast.LENGTH_SHORT).show()
+        else {
+            if (!DataValidator.checkIfValidDateAndTime(edFinished.text.toString()) ||
+                !DataValidator.checkIfValidStartFinishDates(
+                    edStarted.text.toString(),
+                    edFinished.text.toString()
+                )
+            )
+                Toast.makeText(this, "wrong end time!", Toast.LENGTH_SHORT).show()
+            else {
+                val catInt: Int = fetchCategory(edCategory.text.toString())
+                if (catInt == -1)
+                    Toast.makeText(this, "no such category!", Toast.LENGTH_SHORT).show()
+                else {
+
+                    val db = dbHelper.writableDatabase
+
+                    val values = ContentValues().apply {
+                        put("name", catInt)
+                        put("started", SimpleDateFormat("dd/MM/yyyy kk:mm").parse(edStarted.text.toString()).time)
+                        put("finished", SimpleDateFormat("dd/MM/yyyy kk:mm").parse(edFinished.text.toString()).time)
+                        put("notes", edNotes.text.toString())
+                    }
+
+                    val newRowId = db.update("Activities", values, "id = ?", arrayOf(currSelectedView.toString()))
+
+                    db.close()
+
+                    loadActivities(edStarted.text.toString().split(' ')[0])
+
+                    val insBtn: ImageButton = findViewById(R.id.editButton)
+                    insBtn.setOnClickListener {
+                        enableUpdate()
+                    }
+                    insBtn.setImageResource(R.drawable.edit_icon)
+                }
+            }
+        }
     }
 
     fun handleDelete(){
@@ -332,6 +392,23 @@ class MainActivity : AppCompatActivity() {
             val deletedRows = db.delete("Activities", "id = ?", arrayOf(currSelectedView.toString()))
 
             db.close()
+
+            val edCategory: EditText = findViewById(R.id.edCategory)
+            val edStarted: EditText = findViewById(R.id.edStarted)
+            val edFinished: EditText = findViewById(R.id.edFinished)
+            val edNotes: EditText = findViewById(R.id.edNotes)
+
+            edCategory.isEnabled = false
+            edStarted.isEnabled = false
+            edFinished.isEnabled = false
+            edNotes.isEnabled = false
+
+            val insBtn: ImageButton = findViewById(R.id.editButton)
+            insBtn.setOnClickListener {
+                enableUpdate()
+            }
+            insBtn.setImageResource(R.drawable.edit_icon)
+            insBtn.background.setTint(Color.LTGRAY)
         }
     }
 

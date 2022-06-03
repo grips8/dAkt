@@ -206,7 +206,7 @@
                     android:layout_gravity="end"
                     android:gravity="center"
                     android:src="@drawable/edit_icon"
-                    android:backgroundTint="@color/design_default_color_primary"/>
+                    android:backgroundTint="@color/blue_grotto"/>
 
                 <ImageButton
                     android:id="@+id/deleteButton"
