@@ -7,7 +7,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "ActDB", null
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL("CREATE TABLE Categories (" +
                 "id INTEGER PRIMARY KEY," +
-                "name TEXT)"
+                "name TEXT," +
+                "description TEXT," +
+                "starred BOOLEAN)"
         )
         db.execSQL("CREATE TABLE Activities (" +
                 "id INTEGER PRIMARY KEY," +
@@ -15,26 +17,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "ActDB", null
                 "started INTEGER," +
                 "finished INTEGER," +
                 "notes TEXT)"
-        )
-        db.execSQL("CREATE TABLE BRActivities (" +
-                "id INTEGER PRIMARY KEY," +
-                "name INTEGER," +
-                "started INTEGER," +
-                "finished INTEGER," +
-                "notes TEXT," +
-                "pages INTEGER," +
-                "title TEXT," +
-                "genre TEXT)"
-        )
-        db.execSQL("CREATE TABLE BActivities (" +
-                "id INTEGER PRIMARY KEY," +
-                "name INTEGER," +
-                "started INTEGER," +
-                "finished INTEGER," +
-                "notes TEXT," +
-                "calories INTEGER," +
-                "cuisine TEXT," +
-                "meal TEXT)"
         )
     }
 

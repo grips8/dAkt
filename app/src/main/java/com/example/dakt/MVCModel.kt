@@ -9,6 +9,7 @@ import java.util.*
 class MVCModel (context: Context){
     private val dbHelper: DatabaseHelper = DatabaseHelper(context)
     private val activities: MutableMap<Int, Activity> = mutableMapOf()
+    private val categories: MutableMap<Int, Category> = mutableMapOf()
     private var currSelectedView: Int = -1
     private var currDate: Long = 0
 
@@ -108,5 +109,49 @@ class MVCModel (context: Context){
 
             db.close()
         }
+    }
+
+    fun handleCategories(){
+        categories.clear()
+
+        val db = this.dbHelper.readableDatabase
+        val cs: Cursor = db.query(
+            "Categories",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        )
+
+        while (cs.moveToNext()) {
+            categories[cs.getInt(0)] =
+                Category(cs.getInt(0), cs.getString(1), cs.getString(2), (cs.getInt(3) == 1))
+        }
+        cs.close()
+        db.close()
+    }
+
+    fun getCategories() : MutableMap<Int, Category> {
+        return categories
+    }
+
+    // error when such index doesn't exist, but I'm pretty sure it does in all calls
+    fun getCategory(mId: Int) : Category {
+        return categories[mId]!!
+    }
+
+    fun handleInsertCategory(name: String, description: String, starred: Boolean) {
+        val db = dbHelper.writableDatabase
+        val values = ContentValues().apply {
+            put("name", name)
+            put("description", description)
+            put("starred", starred)
+        }
+
+        val newRowId = db.insert("Categories", null, values)
+
+        db.close()
     }
 }

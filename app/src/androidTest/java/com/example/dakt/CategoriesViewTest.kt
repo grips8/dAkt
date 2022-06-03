@@ -27,7 +27,7 @@ class CategoriesViewTest {
             categories[id] = Category(id, str, "Dzien dobry poprosze kosmoslimy mentolowe, te najciensze. Z polki czy spod lady? Spod laady! 2.50. CO TAK DROGO?! To z polki... 2.50. ehhh, prosze. Zaraz, gdzie ja to mam. Europaleta to nie", (Random.nextInt(0, 10) < 5))
             id++
         }
-        intentRule.scenario.onActivity{ activity -> activity.generateCategories(categories)}
+        intentRule.scenario.onActivity{ activity -> activity.generateCategories()}
         onView(withId(R.id.catScrollView)).check(matches(hasChildCount(id)))
     }
 }

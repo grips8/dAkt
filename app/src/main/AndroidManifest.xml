@@ -11,7 +11,8 @@
         android:theme="@style/Theme.DAkt">
         <activity
             android:name=".CategoriesView"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
