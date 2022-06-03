@@ -13,22 +13,144 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="14">
+            android:layout_weight="0.925"
+            android:orientation="vertical">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.35">
+
+                <LinearLayout
+                    android:id="@+id/catScrollView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"/>
+
+            </ScrollView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.65"
+                android:orientation="vertical">
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingTop="10dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.3"
+                        android:text="Name"
+                        android:textAlignment="gravity"
+                        android:textAllCaps="true"
+                        android:gravity="center_vertical|right"
+                        android:padding="7dp"/>
+                    <EditText
+                        android:id="@+id/catEdName"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.7"
+                        android:background="@drawable/border"
+                        android:padding="7dp"
+                        android:maxLines="1"
+                        android:inputType="text"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:orientation="horizontal"
+                    android:paddingTop="10dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.3"
+                        android:text="Description"
+                        android:textAlignment="gravity"
+                        android:textAllCaps="true"
+                        android:gravity="center_vertical|right"
+                        android:padding="7dp"/>
+                    <EditText
+                        android:id="@+id/catEdDescription"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.7"
+                        android:scrollHorizontally="false"
+                        android:breakStrategy="simple"
+                        android:gravity="top"
+                        android:background="@drawable/border"
+                        android:padding="7dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingTop="10dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.3"
+                        android:text="Starred"
+                        android:textAlignment="gravity"
+                        android:textAllCaps="true"
+                        android:gravity="center_vertical|right"
+                        android:padding="7dp"/>
+                    <CheckBox
+                        android:id="@+id/catStarredCheckbox"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.7"
+                        android:gravity="center_vertical|left"
+                        android:padding="7dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:orientation="horizontal"
+                    android:gravity="right"
+                    android:paddingTop="5dp">
+
+                    <ImageButton
+                        android:id="@+id/catAddButton"
+                        android:layout_width="65dp"
+                        android:layout_height="65dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_gravity="end"
+                        android:gravity="center"
+                        android:src="@drawable/add_icon"
+                        android:backgroundTint="@color/blue_grotto"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_weight="0.075"
             android:orientation="horizontal"
-            >
+            android:background="@color/navy_blue">
 
             <Button
                 android:id="@+id/switchBackFromCategories"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                style="?android:attr/borderlessButtonStyle"
                 android:text="Back"/>
 
         </LinearLayout>
