@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DAkt">
         <activity
+            android:name=".StatisticsView"
+            android:exported="false" />
+        <activity
             android:name=".CategoriesView"
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />

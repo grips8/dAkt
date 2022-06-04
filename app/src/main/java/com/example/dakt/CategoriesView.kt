@@ -1,6 +1,5 @@
 package com.example.dakt
 
-import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
@@ -75,7 +74,7 @@ class CategoriesView : AppCompatActivity() {
         catEdDesc.setText(cat.description)
         catCheckbox.isChecked = cat.starred
     }
-    private fun generateCategories () {
+    fun generateCategories () {
         val categories: MutableMap<Int, Category> = model.getCategories()
 
         catClearEdits()

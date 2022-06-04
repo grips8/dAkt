@@ -30,6 +30,9 @@ class MainActivityTest {
 
     @Test
     fun switchChangesActivityToStatistics() {
-
+        Intents.init()
+        onView(withId(R.id.switchStatButton)).perform(click())
+        intended(hasComponent(StatisticsView::class.java.name))
+        Intents.release()
     }
 }

@@ -56,8 +56,12 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, CategoriesView::class.java)
             startActivity(intent)
         }
-        findViewById<ImageButton>(R.id.deleteButton).setOnClickListener { deleteClick() }
+        findViewById<Button>(R.id.switchStatButton).setOnClickListener {
+            val intent = Intent(this, StatisticsView::class.java)
+            startActivity(intent)
+        }
 
+        findViewById<ImageButton>(R.id.deleteButton).setOnClickListener { deleteClick() }
         findViewById<ImageButton>(R.id.enableAddButton).setOnClickListener { enableInsertClick() }
         findViewById<ImageButton>(R.id.prevDateButton).setOnClickListener { prevDayClick() }
         findViewById<ImageButton>(R.id.nextDateButton).setOnClickListener { nextDayClick() }
