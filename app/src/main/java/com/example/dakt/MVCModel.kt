@@ -12,6 +12,7 @@ class MVCModel (context: Context){
     private val categories: MutableMap<Int, Category> = mutableMapOf()
     private var currSelectedView: Int = -1
     private var currDate: Long = 0
+    private val activitiesStat: MutableList<Activity> = mutableListOf()
 
     fun getCurrDate() : Long { return currDate }
 
@@ -40,7 +41,7 @@ class MVCModel (context: Context){
 
         while (cs.moveToNext()) {
             activities[cs.getInt(0)] =
-                Activity(cs.getInt(0), cs.getString(6), Date(cs.getLong(2)), Date(cs.getLong(3)), cs.getString(4))
+                Activity(cs.getInt(0), cs.getString(6), Date(cs.getLong(2)), Date(cs.getLong(3)), cs.getString(4), cs.getLong(2), cs.getLong(3))
         }
         cs.close()
         db.close()
@@ -153,5 +154,46 @@ class MVCModel (context: Context){
         val newRowId = db.insert("Categories", null, values)
 
         db.close()
+    }
+
+    fun handleActivitiesStatistics(fromT: Long, toT: Long) {
+        activitiesStat.clear()
+        val db = this.dbHelper.readableDatabase
+        val cs: Cursor = db.query(
+            "Activities",
+            null,
+            null,
+            null,
+            null,
+            null,
+            "started ASC"
+        )
+
+        while (cs.moveToNext()) {
+            activitiesStat.add(Activity(cs.getInt(0), "Placeholder", Date(cs.getLong(2)), Date(cs.getLong(3)), cs.getString(4), cs.getLong(2), cs.getLong(3)))
+        }
+        cs.close()
+        db.close()
+    }
+
+    // if first element in activities is before fromT, the function doesn't work properly
+    fun daysOfWeek(fromT: Long, toT: Long) : IntArray {      // returns activities per day of week (0 -> monday,..., 6->sunday)
+        var res: IntArray = intArrayOf(0, 0, 0, 0, 0, 0, 0)
+        var index: Int = ((((fromT + 7200000) / 86400000) + 3) % 7).toInt()     // calculating day of week (+7200000 is UMT to GMT timezone)
+        // prob should replace with some getTimezone(), but it's good for now
+        var actIndex: Int = 0
+        var currentDay: Long = fromT
+        while (currentDay < toT + 86400000) {
+            while (actIndex < activitiesStat.count() &&
+                activitiesStat[actIndex].startedLong >= currentDay &&
+                activitiesStat[actIndex].startedLong < currentDay + 86400000) {
+                res[index%7]++
+                actIndex++
+            }
+            currentDay += 86400000
+            index++
+        }
+
+        return res
     }
 }

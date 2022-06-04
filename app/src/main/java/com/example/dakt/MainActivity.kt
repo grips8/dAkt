@@ -163,6 +163,7 @@ class MainActivity : AppCompatActivity() {
             val index = actButtons.last().id
             actButtons.last().setOnClickListener { selectClick(index) }
             actButtons.last().setBackgroundResource(R.drawable.actborder)
+            actButtons.last().maxLines = 1
 
             horLayout.addView(actButtons.last())
         }
@@ -175,7 +176,7 @@ class MainActivity : AppCompatActivity() {
         switchInsertButton(false)
         switchEditButton(false)
 
-        val dateFormat: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy kk:mm")
+        val dateFormat: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm")
         edCategory.setText(act.name)
         edStarted.setText(dateFormat.format(act.started).toString())
         edFinished.setText(dateFormat.format(act.finished).toString())
@@ -244,7 +245,7 @@ class MainActivity : AppCompatActivity() {
             return
         }
         if (!DataValidator.checkIfValidDateAndTime(edFinished.text.toString()) ||
-            !DataValidator.checkIfValidStartFinishDates(edStarted.text.toString(), edFinished.text.toString())) {
+            !DataValidator.checkIfValidStartFinishDateTimes(edStarted.text.toString(), edFinished.text.toString())) {
             makeToast("wrong end time!")
             return
         }
@@ -267,7 +268,7 @@ class MainActivity : AppCompatActivity() {
             return
         }
         if (!DataValidator.checkIfValidDateAndTime(edFinished.text.toString()) ||
-            !DataValidator.checkIfValidStartFinishDates(edStarted.text.toString(), edFinished.text.toString())) {
+            !DataValidator.checkIfValidStartFinishDateTimes(edStarted.text.toString(), edFinished.text.toString())) {
             makeToast("wrong end time!")
             return
         }

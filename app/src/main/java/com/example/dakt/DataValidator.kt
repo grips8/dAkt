@@ -13,7 +13,11 @@ object DataValidator {
         return inp.matches(patt)
     }
 
+    fun checkIfValidStartFinishDateTimes (st: String, fin: String) : Boolean {
+        return SimpleDateFormat("dd/MM/yyyy HH:mm").parse(st).time < SimpleDateFormat("dd/MM/yyyy HH:mm").parse(fin).time
+    }
+
     fun checkIfValidStartFinishDates (st: String, fin: String) : Boolean {
-        return SimpleDateFormat("dd/MM/yyyy kk:mm").parse(st).time < SimpleDateFormat("dd/MM/yyyy kk:mm").parse(fin).time
+        return SimpleDateFormat("dd/MM/yyyy").parse(st).time <= SimpleDateFormat("dd/MM/yyyy").parse(fin).time
     }
 }
