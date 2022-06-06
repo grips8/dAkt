@@ -256,6 +256,7 @@ class MainActivity : AppCompatActivity() {
         }
         model.handleInsert(catId, edStarted.text.toString(), edFinished.text.toString(), edNotes.text.toString())
         switchInsertButton(false)
+        changeHorDate(edStarted.text.toString().split(' ')[0])
         changeDateClick(edStarted.text.toString().split(' ')[0])
     }
     private fun enableUpdateClick() {
