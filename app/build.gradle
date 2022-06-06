@@ -52,4 +52,5 @@ dependencies {
     androidTestImplementation('androidx.test:runner:1.4.0')
     androidTestImplementation('androidx.test:rules:1.4.0')
     testImplementation "com.google.truth:truth:1.0.1"
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 }
