@@ -74,7 +74,7 @@ class CategoriesView : AppCompatActivity() {
         catEdDesc.setText(cat.description)
         catCheckbox.isChecked = cat.starred
     }
-    fun generateCategories () {
+    private fun generateCategories () {
         val categories: MutableMap<Int, Category> = model.getCategories()
 
         catClearEdits()

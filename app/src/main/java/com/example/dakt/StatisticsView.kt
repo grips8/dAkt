@@ -47,7 +47,6 @@ class StatisticsView : AppCompatActivity() {
         changeValidElementsText(sumDays.toString())
 
         val dayNames: List<String> = listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
-        // todo: connect to char lib
         statView.removeAllViews()
 
         val chart: BarChart = BarChart(this)
